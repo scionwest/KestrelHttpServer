@@ -28,7 +28,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.Internal
 
         public SocketAwaitable SendAsync(ReadOnlyBuffer buffers)
         {
-            if (buffers.IsSingleSpan)
+            if (buffers.IsSingleSegment)
             {
                 return SendAsync(buffers.First);
             }
@@ -78,7 +78,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.Internal
         private List<ArraySegment<byte>> GetBufferList(ReadOnlyBuffer buffer)
         {
             Debug.Assert(!buffer.IsEmpty);
-            Debug.Assert(!buffer.IsSingleSpan);
+            Debug.Assert(!buffer.IsSingleSegment);
 
             if (_bufferList == null)
             {

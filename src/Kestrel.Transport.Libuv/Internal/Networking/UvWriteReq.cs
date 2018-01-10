@@ -70,7 +70,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.Internal.Networkin
             try
             {
                 var nBuffers = 0;
-                if (buffer.IsSingleSpan)
+                if (buffer.IsSingleSegment)
                 {
                     nBuffers = 1;
                 }

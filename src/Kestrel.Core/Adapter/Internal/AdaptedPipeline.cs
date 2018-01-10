@@ -78,7 +78,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Adapter.Internal
                             }
                             await stream.FlushAsync();
                         }
-                        else if (buffer.IsSingleSpan)
+                        else if (buffer.IsSingleSegment)
                         {
                             var array = buffer.First.GetArray();
                             await stream.WriteAsync(array.Array, array.Offset, array.Count);

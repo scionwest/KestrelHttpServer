@@ -46,7 +46,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http
                 consumed = buffer.Seek(consumed, lineIndex + 1);
                 span = span.Slice(0, lineIndex + 1);
             }
-            else if (buffer.IsSingleSpan)
+            else if (buffer.IsSingleSegment)
             {
                 // No request line end
                 return false;
@@ -247,7 +247,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http
                                     // the reader's state matches what we expect
                                     if (index == reader.Index)
                                     {
-                                        reader.Skip(2);
+                                        reader.Advance(2);
                                     }
 
                                     done = true;
@@ -308,7 +308,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http
                             }
 
                             // Skip the reader forward past the header line
-                            reader.Skip(length);
+                            reader.Advance(length);
                             remaining -= length;
                         }
                     }

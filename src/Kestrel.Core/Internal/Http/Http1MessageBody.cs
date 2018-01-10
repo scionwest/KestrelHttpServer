@@ -155,7 +155,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http
         {
             _context.TimeoutControl.BytesRead(readableBuffer.Length);
 
-            if (readableBuffer.IsSingleSpan)
+            if (readableBuffer.IsSingleSegment)
             {
                 writableBuffer.Write(readableBuffer.First.Span);
             }

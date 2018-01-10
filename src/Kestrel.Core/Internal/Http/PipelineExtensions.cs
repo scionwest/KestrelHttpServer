@@ -19,7 +19,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ReadOnlySpan<byte> ToSpan(this ReadOnlyBuffer buffer)
         {
-            if (buffer.IsSingleSpan)
+            if (buffer.IsSingleSegment)
             {
                 return buffer.First.Span;
             }

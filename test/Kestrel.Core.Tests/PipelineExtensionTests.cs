@@ -66,7 +66,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Tests
             var reader = _pipe.Reader.ReadAsync().GetAwaiter().GetResult();
             var numAsString = ulong.MaxValue.ToString();
             var written = reader.Buffer.Slice(spacer.Length, numAsString.Length);
-            Assert.False(written.IsSingleSpan, "The buffer should cross spans");
+            Assert.False(written.IsSingleSegment, "The buffer should cross spans");
             AssertExtensions.Equal(Encoding.ASCII.GetBytes(numAsString), written.ToArray());
         }
 
@@ -166,7 +166,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Tests
 
             var reader = _pipe.Reader.ReadAsync().GetAwaiter().GetResult();
             var written = reader.Buffer.Slice(spacer.Length, stringLength);
-            Assert.False(written.IsSingleSpan, "The buffer should cross spans");
+            Assert.False(written.IsSingleSegment, "The buffer should cross spans");
             AssertExtensions.Equal(Encoding.ASCII.GetBytes(testString), written.ToArray());
         }
     }

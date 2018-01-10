@@ -226,7 +226,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http2
                 return false;
             }
 
-            var span = readableBuffer.IsSingleSpan
+            var span = readableBuffer.IsSingleSegment
                 ? readableBuffer.First.Span
                 : readableBuffer.ToSpan();
 
