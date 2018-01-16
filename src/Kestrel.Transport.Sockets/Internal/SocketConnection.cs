@@ -53,7 +53,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.Internal
 
         public override MemoryPool MemoryPool { get; }
         public override Scheduler InputWriterScheduler => Scheduler.Inline;
-        public override Scheduler OutputReaderScheduler => Scheduler.TaskRun;
+        public override Scheduler OutputReaderScheduler => Scheduler.ThreadPool;
 
         public async Task StartAsync(IConnectionHandler connectionHandler)
         {
