@@ -9,7 +9,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http2
 {
     public static class Http2FrameReader
     {
-        public static bool ReadFrame(ReadOnlyBuffer readableBuffer, Http2Frame frame, out Position consumed, out Position examined)
+        public static bool ReadFrame(ReadOnlyBuffer<byte> readableBuffer, Http2Frame frame, out Position consumed, out Position examined)
         {
             consumed = readableBuffer.Start;
             examined = readableBuffer.End;

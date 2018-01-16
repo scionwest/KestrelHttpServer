@@ -9,8 +9,8 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http
 {
     public interface IHttpParser<TRequestHandler> where TRequestHandler : IHttpHeadersHandler, IHttpRequestLineHandler
     {
-        bool ParseRequestLine(TRequestHandler handler, ReadOnlyBuffer buffer, out Position consumed, out Position examined);
+        bool ParseRequestLine(TRequestHandler handler, ReadOnlyBuffer<byte> buffer, out Position consumed, out Position examined);
 
-        bool ParseHeaders(TRequestHandler handler, ReadOnlyBuffer buffer, out Position consumed, out Position examined, out int consumedBytes);
+        bool ParseHeaders(TRequestHandler handler, ReadOnlyBuffer<byte> buffer, out Position consumed, out Position examined, out int consumedBytes);
     }
 }

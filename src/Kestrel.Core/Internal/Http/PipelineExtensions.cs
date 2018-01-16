@@ -17,7 +17,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http
         private static byte[] _numericBytesScratch;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ReadOnlySpan<byte> ToSpan(this ReadOnlyBuffer buffer)
+        public static ReadOnlySpan<byte> ToSpan(this ReadOnlyBuffer<byte> buffer)
         {
             if (buffer.IsSingleSegment)
             {

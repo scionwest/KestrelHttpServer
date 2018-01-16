@@ -33,7 +33,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http
         private const byte ByteQuestionMark = (byte)'?';
         private const byte BytePercentage = (byte)'%';
 
-        public unsafe bool ParseRequestLine(TRequestHandler handler, ReadOnlyBuffer buffer, out Position consumed, out Position examined)
+        public unsafe bool ParseRequestLine(TRequestHandler handler, ReadOnlyBuffer<byte> buffer, out Position consumed, out Position examined)
         {
             consumed = buffer.Start;
             examined = buffer.End;
@@ -188,7 +188,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http
             handler.OnStartLine(method, httpVersion, targetBuffer, pathBuffer, query, customMethod, pathEncoded);
         }
 
-        public unsafe bool ParseHeaders(TRequestHandler handler, ReadOnlyBuffer buffer, out Position consumed, out Position examined, out int consumedBytes)
+        public unsafe bool ParseHeaders(TRequestHandler handler, ReadOnlyBuffer<byte> buffer, out Position consumed, out Position examined, out int consumedBytes)
         {
             consumed = buffer.Start;
             examined = buffer.End;
@@ -197,7 +197,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http
             var bufferEnd = buffer.End;
 
             var reader = BufferReader.Create(buffer);
-            var start = default(BufferReader<ReadOnlyBuffer>);
+            var start = default(BufferReader<ReadOnlyBuffer<byte>>);
             var done = false;
 
             try
@@ -418,7 +418,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static bool TryGetNewLine(ref ReadOnlyBuffer buffer, out Position found)
+        private static bool TryGetNewLine(ref ReadOnlyBuffer<byte> buffer, out Position found)
         {
             var byteLfPosition = buffer.PositionOf(ByteLF);
             if (byteLfPosition != null)
