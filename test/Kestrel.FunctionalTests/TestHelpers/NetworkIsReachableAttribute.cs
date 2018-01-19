@@ -13,8 +13,8 @@ namespace Microsoft.AspNetCore.Server.Kestrel.FunctionalTests
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
     public class NetworkIsReachableAttribute : Attribute, ITestCondition
     {
-        private string _hostname = null;
-        private string _error = null;
+//        private string _hostname;
+//        private string _error;
 
         public bool IsMet
         {
@@ -45,8 +45,9 @@ namespace Microsoft.AspNetCore.Server.Kestrel.FunctionalTests
             }
         }
 
-        public string SkipReason => _hostname != null
-            ? $"Test cannot run when network is unreachable. Socket exception: '{_error}'"
-            : "Could not determine hostname for current test machine";
+        public string SkipReason => "";
+//        public string SkipReason => _hostname != null
+//            ? $"Test cannot run when network is unreachable. Socket exception: '{_error}'"
+//            : "Could not determine hostname for current test machine";
     }
 }
