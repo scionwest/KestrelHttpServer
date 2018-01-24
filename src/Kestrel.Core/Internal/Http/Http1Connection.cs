@@ -45,7 +45,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http
             Output = new Http1OutputProducer(_context.Application.Input, _context.Transport.Output, _context.ConnectionId, _context.ServiceContext.Log, _context.TimeoutControl);
         }
 
-        public IPipeReader Input => _context.Transport.Input;
+        public PipeReader Input => _context.Transport.Input;
 
         public ITimeoutControl TimeoutControl => _context.TimeoutControl;
         public bool RequestTimedOut => _requestTimedOut;

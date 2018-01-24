@@ -84,7 +84,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http2
 
         public string ConnectionId => _context.ConnectionId;
 
-        public IPipeReader Input => _context.Transport.Input;
+        public PipeReader Input => _context.Transport.Input;
 
         public IKestrelTrace Log => _context.ServiceContext.Log;
 

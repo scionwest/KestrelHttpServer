@@ -4,7 +4,7 @@
   <PropertyGroup Label="RestoreSources">
     <RestoreSources>$(DotNetRestoreSources)</RestoreSources>
     <RestoreSources Condition="'$(DotNetBuildOffline)' != 'true' AND '$(AspNetUniverseBuildOffline)' != 'true' ">
-      /Users/shalter/source/dotnet/corefxlab/packages/;
+      d:/localnuget/;
       $(RestoreSources);
       https://dotnet.myget.org/F/dotnet-core/api/v3/index.json;
       https://dotnet.myget.org/F/aspnetcore-dev/api/v3/index.json;

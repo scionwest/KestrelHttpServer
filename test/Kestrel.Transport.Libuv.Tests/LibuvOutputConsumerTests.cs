@@ -728,7 +728,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.Tests
             return (Http1OutputProducer)http1Connection.Output;
         }
 
-        private async Task WriteOutputAsync(LibuvOutputConsumer consumer, IPipeReader outputReader, Http1Connection http1Connection)
+        private async Task WriteOutputAsync(LibuvOutputConsumer consumer, PipeReader outputReader, Http1Connection http1Connection)
         {
             // This WriteOutputAsync() calling code is equivalent to that in LibuvConnection.
             try

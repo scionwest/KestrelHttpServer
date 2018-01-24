@@ -55,7 +55,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Tests
 
         private Http1OutputProducer CreateOutputProducer(PipeOptions pipeOptions)
         {
-            var pipe = new Pipe(pipeOptions);
+            var pipe = new ResetablePipe(pipeOptions);
             var serviceContext = new TestServiceContext();
             var socketOutput = new Http1OutputProducer(
                 pipe.Reader,

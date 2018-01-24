@@ -11,8 +11,8 @@ namespace System.IO.Pipelines
 
         public static (IPipeConnection Transport, IPipeConnection Application) CreateConnectionPair(PipeOptions inputOptions, PipeOptions outputOptions)
         {
-            var input = new Pipe(inputOptions);
-            var output = new Pipe(outputOptions);
+            var input = new ResetablePipe(inputOptions);
+            var output = new ResetablePipe(outputOptions);
 
             var transportToApplication = new PipeConnection(output.Reader, input.Writer);
             var applicationToTransport = new PipeConnection(input.Reader, output.Writer);

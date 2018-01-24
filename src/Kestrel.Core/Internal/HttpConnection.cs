@@ -115,8 +115,8 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal
                 {
                     adaptedPipeline = new AdaptedPipeline(_adaptedTransport,
                                                           application,
-                                                          new Pipe(AdaptedInputPipeOptions),
-                                                          new Pipe(AdaptedOutputPipeOptions));
+                                                          new ResetablePipe(AdaptedInputPipeOptions),
+                                                          new ResetablePipe(AdaptedOutputPipeOptions));
 
                     _adaptedTransport = adaptedPipeline;
                 }

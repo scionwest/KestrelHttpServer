@@ -31,7 +31,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http
         private static readonly byte[] _bytesConnectionKeepAlive = Encoding.ASCII.GetBytes("\r\nConnection: keep-alive");
         private static readonly byte[] _bytesTransferEncodingChunked = Encoding.ASCII.GetBytes("\r\nTransfer-Encoding: chunked");
         private static readonly byte[] _bytesServer = Encoding.ASCII.GetBytes("\r\nServer: " + Constants.ServerName);
-        private static readonly Action<WritableBuffer, ArraySegment<byte>> _writeChunk = WriteChunk;
+        private static readonly Action<PipeWriter, ArraySegment<byte>> _writeChunk = WriteChunk;
 
         private readonly object _onStartingSync = new Object();
         private readonly object _onCompletedSync = new Object();
@@ -75,7 +75,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http
 
         public IHttpResponseControl HttpResponseControl { get; set; }
 
-        public Pipe RequestBodyPipe { get; }
+        public ResetablePipe RequestBodyPipe { get; }
 
         public ServiceContext ServiceContext => _context.ServiceContext;
         private IPEndPoint LocalEndPoint => _context.LocalEndPoint;
@@ -896,7 +896,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http
             return Output.WriteAsync(_writeChunk, data);
         }
 
-        private static void WriteChunk(WritableBuffer writableBuffer, ArraySegment<byte> buffer)
+        private static void WriteChunk(PipeWriter writableBuffer, ArraySegment<byte> buffer)
         {
             var writer = OutputWriter.Create(writableBuffer);
             if (buffer.Count > 0)
@@ -1293,8 +1293,8 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http
             Log.ApplicationError(ConnectionId, TraceIdentifier, ex);
         }
 
-        private Pipe CreateRequestBodyPipe()
-            => new Pipe(new PipeOptions
+        private ResetablePipe CreateRequestBodyPipe()
+            => new ResetablePipe(new PipeOptions
             (
                 pool: _context.MemoryPool,
                 readerScheduler: ServiceContext.ThreadPool,

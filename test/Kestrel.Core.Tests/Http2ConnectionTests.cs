@@ -2138,7 +2138,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Tests
 
         private async Task SendAsync(ArraySegment<byte> span)
         {
-            var writableBuffer = _pair.Application.Output.Alloc(1);
+            var writableBuffer = _pair.Application.Output;
             writableBuffer.Write(span);
             await writableBuffer.FlushAsync();
         }

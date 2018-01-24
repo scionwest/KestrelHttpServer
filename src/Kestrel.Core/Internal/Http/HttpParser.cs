@@ -205,13 +205,13 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http
                 while (!reader.End)
                 {
                     var span = reader.CurrentSegment;
-                    var remaining = span.Length - reader.Index;
+                    var remaining = span.Length - reader.CurrentSegmentIndex;
 
                     fixed (byte* pBuffer = &MemoryMarshal.GetReference(span))
                     {
                         while (remaining > 0)
                         {
-                            var index = reader.Index;
+                            var index = reader.CurrentSegmentIndex;
                             int ch1;
                             int ch2;
 
@@ -228,8 +228,8 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http
                                 start = reader;
 
                                 // Possibly split across spans
-                                ch1 = reader.Take();
-                                ch2 = reader.Take();
+                                ch1 = reader.Read();
+                                ch2 = reader.Read();
                             }
 
                             if (ch1 == ByteCR)
@@ -245,7 +245,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http
                                 {
                                     // If we got 2 bytes from the span directly so skip ahead 2 so that
                                     // the reader's state matches what we expect
-                                    if (index == reader.Index)
+                                    if (index == reader.CurrentSegmentIndex)
                                     {
                                         reader.Advance(2);
                                     }
@@ -260,10 +260,10 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http
 
                             // We moved the reader so look ahead 2 bytes so reset both the reader
                             // and the index
-                            if (index != reader.Index)
+                            if (index != reader.CurrentSegmentIndex)
                             {
                                 reader = start;
-                                index = reader.Index;
+                                index = reader.CurrentSegmentIndex;
                             }
 
                             var endIndex = new Span<byte>(pBuffer + index, remaining).IndexOf(ByteLF);

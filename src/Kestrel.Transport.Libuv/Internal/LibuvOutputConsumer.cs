@@ -14,10 +14,10 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.Internal
         private readonly UvStreamHandle _socket;
         private readonly string _connectionId;
         private readonly ILibuvTrace _log;
-        private readonly IPipeReader _pipe;
+        private readonly PipeReader _pipe;
 
         public LibuvOutputConsumer(
-            IPipeReader pipe,
+            PipeReader pipe,
             LibuvThread thread,
             UvStreamHandle socket,
             string connectionId,

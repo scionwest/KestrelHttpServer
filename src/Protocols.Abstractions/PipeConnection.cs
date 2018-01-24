@@ -6,15 +6,15 @@ namespace System.IO.Pipelines
 {
     public class PipeConnection : IPipeConnection
     {
-        public PipeConnection(IPipeReader reader, IPipeWriter writer)
+        public PipeConnection(PipeReader reader, PipeWriter writer)
         {
             Input = reader;
             Output = writer;
         }
 
-        public IPipeReader Input { get; }
+        public PipeReader Input { get; }
 
-        public IPipeWriter Output { get; }
+        public PipeWriter Output { get; }
 
         public void Dispose()
         {

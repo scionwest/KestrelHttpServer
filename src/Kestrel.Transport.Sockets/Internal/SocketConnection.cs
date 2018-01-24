@@ -96,11 +96,11 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.Internal
                 while (true)
                 {
                     // Ensure we have some reasonable amount of buffer space
-                    var buffer = Input.Alloc(MinAllocBufferSize);
+                    var buffer = Input.GetMemory(MinAllocBufferSize);
 
                     try
                     {
-                        var bytesReceived = await _receiver.ReceiveAsync(buffer.Buffer);
+                        var bytesReceived = await _receiver.ReceiveAsync(buffer);
 
                         if (bytesReceived == 0)
                         {
@@ -109,14 +109,14 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.Internal
                             break;
                         }
 
-                        buffer.Advance(bytesReceived);
+                        Input.Advance(bytesReceived);
                     }
                     finally
                     {
-                        buffer.Commit();
+                        Input.Commit();
                     }
 
-                    var flushTask = buffer.FlushAsync();
+                    var flushTask = Input.FlushAsync();
 
                     if (!flushTask.IsCompleted)
                     {

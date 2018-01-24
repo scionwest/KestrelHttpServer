@@ -14,7 +14,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Performance
 {
     public class RequestParsingBenchmark
     {
-        public IPipe Pipe { get; set; }
+        public Pipe Pipe { get; set; }
 
         public Http1Connection Http1Connection { get; set; }
 
@@ -45,7 +45,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Performance
             http1Connection.Reset();
 
             Http1Connection = http1Connection;
-            Pipe = new Pipe(new PipeOptions(memoryPool));
+            Pipe = new ResetablePipe(new PipeOptions(memoryPool));
         }
 
         [Benchmark(Baseline = true, OperationsPerInvoke = RequestParsingData.InnerLoopCount)]
@@ -130,10 +130,9 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Performance
 
         private void InsertData(byte[] bytes)
         {
-            var buffer = Pipe.Writer.Alloc(2048);
-            buffer.Write(bytes);
+            Pipe.Writer.Write(bytes);
             // There should not be any backpressure and task completes immediately
-            buffer.FlushAsync().GetAwaiter().GetResult();
+            Pipe.Writer.FlushAsync().GetAwaiter().GetResult();
         }
 
         private void ParseDataDrainBuffer()

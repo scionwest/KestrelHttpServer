@@ -13,14 +13,14 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Performance
         private const int _writeLenght = 57;
         private const int InnerLoopCount = 512;
 
-        private IPipe _pipe;
+        private Pipe _pipe;
         private MemoryPool _memoryPool;
 
         [IterationSetup]
         public void Setup()
         {
             _memoryPool = new MemoryPool();
-            _pipe = new Pipe(new PipeOptions(_memoryPool));
+            _pipe = new ResetablePipe(new PipeOptions(_memoryPool));
         }
 
         [Benchmark(OperationsPerInvoke = InnerLoopCount)]
@@ -30,9 +30,9 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Performance
             {
                 for (int i = 0; i < InnerLoopCount; i++)
                 {
-                    var writableBuffer = _pipe.Writer.Alloc(_writeLenght);
-                    writableBuffer.Advance(_writeLenght);
-                    await writableBuffer.FlushAsync();
+                    _pipe.Writer.GetMemory(_writeLenght);
+                    _pipe.Writer.Advance(_writeLenght);
+                    await _pipe.Writer.FlushAsync();
                 }
             });
 
@@ -55,9 +55,9 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Performance
         {
             for (int i = 0; i < InnerLoopCount; i++)
             {
-                var writableBuffer = _pipe.Writer.Alloc(_writeLenght);
-                writableBuffer.Advance(_writeLenght);
-                writableBuffer.FlushAsync().GetAwaiter().GetResult();
+                _pipe.Writer.GetMemory(_writeLenght);
+                _pipe.Writer.Advance(_writeLenght);
+                _pipe.Writer.FlushAsync().GetAwaiter().GetResult();
                 var result = _pipe.Reader.ReadAsync().GetAwaiter().GetResult();
                 _pipe.Reader.Advance(result.Buffer.End, result.Buffer.End);
             }

@@ -29,7 +29,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Transport.Abstractions.Internal
         public IPipeConnection Transport { get; set; }
         public IPipeConnection Application { get; set; }
 
-        public IPipeWriter Input => Application.Output;
-        public IPipeReader Output => Application.Input;
+        public PipeWriter Input => Application.Output;
+        public PipeReader Output => Application.Input;
     }
 }

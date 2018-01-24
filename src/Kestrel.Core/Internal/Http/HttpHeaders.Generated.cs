@@ -7754,7 +7754,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http
             return true;
         }
         
-        protected void CopyToFast(ref OutputWriter<WritableBuffer> output)
+        protected void CopyToFast(ref OutputWriter<PipeWriter> output)
         {
             var tempBits = _bits | (_contentLength.HasValue ? -9223372036854775808L : 0);
             

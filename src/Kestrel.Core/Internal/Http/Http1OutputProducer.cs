@@ -29,8 +29,8 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http
 
         private bool _completed = false;
 
-        private readonly IPipeWriter _pipeWriter;
-        private readonly IPipeReader _outputPipeReader;
+        private readonly PipeWriter _pipeWriter;
+        private readonly PipeReader _outputPipeReader;
 
         // https://github.com/dotnet/corefxlab/issues/1334
         // Pipelines don't support multiple awaiters on flush
@@ -40,8 +40,8 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http
         private Action _flushCompleted;
 
         public Http1OutputProducer(
-            IPipeReader outputPipeReader,
-            IPipeWriter pipeWriter,
+            PipeReader outputPipeReader,
+            PipeWriter pipeWriter,
             string connectionId,
             IKestrelTrace log,
             ITimeoutControl timeoutControl)
@@ -74,7 +74,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http
             return WriteAsync(Constants.EmptyData, cancellationToken);
         }
 
-        public void Write<T>(Action<WritableBuffer, T> callback, T state)
+        public void Write<T>(Action<PipeWriter, T> callback, T state)
         {
             lock (_contextLock)
             {
@@ -83,13 +83,13 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http
                     return;
                 }
 
-                var buffer = _pipeWriter.Alloc(1);
+                var buffer = _pipeWriter;
                 callback(buffer, state);
                 buffer.Commit();
             }
         }
 
-        public Task WriteAsync<T>(Action<WritableBuffer, T> callback, T state)
+        public Task WriteAsync<T>(Action<PipeWriter, T> callback, T state)
         {
             lock (_contextLock)
             {
@@ -98,7 +98,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http
                     return Task.CompletedTask;
                 }
 
-                var buffer = _pipeWriter.Alloc(1);
+                var buffer = _pipeWriter;
                 callback(buffer, state);
                 buffer.Commit();
             }
@@ -115,7 +115,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http
                     return;
                 }
 
-                var buffer = _pipeWriter.Alloc(1);
+                var buffer = _pipeWriter;
                 var writer = OutputWriter.Create(buffer);
 
                 writer.Write(_bytesHttpVersion11);
@@ -168,7 +168,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http
             ArraySegment<byte> buffer,
             CancellationToken cancellationToken)
         {
-            var writableBuffer = default(WritableBuffer);
+            var writableBuffer = default(PipeWriter);
             long bytesWritten = 0;
             lock (_contextLock)
             {
@@ -177,7 +177,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http
                     return Task.CompletedTask;
                 }
 
-                writableBuffer = _pipeWriter.Alloc(1);
+                writableBuffer = _pipeWriter;
                 var writer = OutputWriter.Create(writableBuffer);
                 if (buffer.Count > 0)
                 {
@@ -193,7 +193,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http
 
         // Single caller, at end of method - so inline
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private Task FlushAsync(WritableBuffer writableBuffer, long bytesWritten, CancellationToken cancellationToken)
+        private Task FlushAsync(PipeWriter writableBuffer, long bytesWritten, CancellationToken cancellationToken)
         {
             var awaitable = writableBuffer.FlushAsync(cancellationToken);
             if (awaitable.IsCompleted)

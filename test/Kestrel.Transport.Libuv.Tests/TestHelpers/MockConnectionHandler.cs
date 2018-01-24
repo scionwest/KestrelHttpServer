@@ -20,8 +20,8 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.Tests.TestHelpers
         {
             var connectionContext = new DefaultConnectionContext(features);
 
-            Input = new Pipe(InputOptions(connectionContext.MemoryPool));
-            Output = new Pipe(OutputOptions(connectionContext.MemoryPool));
+            Input = new ResetablePipe(InputOptions(connectionContext.MemoryPool));
+            Output = new ResetablePipe(OutputOptions(connectionContext.MemoryPool));
 
             var feature = connectionContext.Features.Get<IConnectionTransportFeature>();
 
@@ -29,7 +29,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.Tests.TestHelpers
             feature.Application = new PipeConnection(Output.Reader, Input.Writer);
         }
 
-        public IPipe Input { get; private set; }
-        public IPipe Output { get; private set; }
+        public Pipe Input { get; private set; }
+        public Pipe Output { get; private set; }
     }
 }
