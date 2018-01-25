@@ -123,6 +123,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.Internal
             {
                 // EAGAIN/EWOULDBLOCK so just return the buffer.
                 // http://docs.libuv.org/en/v1.x/stream.html#c.uv_read_cb
+                Input.Commit();
             }
             else if (status > 0)
             {

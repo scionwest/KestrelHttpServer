@@ -45,8 +45,8 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Tests
             Assert.Equal(requestHandler.RawTarget, expectedRawTarget);
             Assert.Equal(requestHandler.RawPath, expectedRawPath);
             Assert.Equal(requestHandler.Version, expectedVersion);
-            Assert.Equal(buffer.End, consumed);
-            Assert.Equal(buffer.End, examined);
+            Assert.True(buffer.Slice(consumed).IsEmpty);
+            Assert.True(buffer.Slice(examined).IsEmpty);
         }
 
         [Theory]
@@ -71,7 +71,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Tests
             Assert.False(parser.ParseRequestLine(requestHandler, buffer, out var consumed, out var examined));
 
             Assert.Equal(buffer.Start, consumed);
-            Assert.Equal(buffer.End, examined);
+            Assert.True(buffer.Slice(examined).IsEmpty);
         }
 
         [Theory]
@@ -208,8 +208,8 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Tests
             var requestHandler = new RequestHandler();
             parser.ParseHeaders(requestHandler, buffer, out var consumed, out var examined, out var consumedBytes);
 
-            Assert.Equal(buffer.Start, consumed);
-            Assert.Equal(buffer.End, examined);
+            Assert.Equal(buffer.Length, buffer.Slice(consumed).Length);
+            Assert.True(buffer.Slice(examined).IsEmpty);
             Assert.Equal(0, consumedBytes);
         }
 
@@ -305,8 +305,8 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Tests
             var buffer2 = new ReadOnlyBuffer<byte>(Encoding.ASCII.GetBytes("\r\n"));
             Assert.True(parser.ParseHeaders(requestHandler, buffer2, out consumed, out examined, out consumedBytes));
 
-            Assert.Equal(buffer2.End, consumed);
-            Assert.Equal(buffer2.End, examined);
+            Assert.True(buffer2.Slice(consumed).IsEmpty);
+            Assert.True(buffer2.Slice(examined).IsEmpty);
             Assert.Equal(2, consumedBytes);
         }
 
@@ -384,8 +384,8 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Tests
             Assert.Single(pairs);
             Assert.Equal(headerName, pairs[0].Key);
             Assert.Equal(expectedHeaderValue, pairs[0].Value);
-            Assert.Equal(buffer.End, consumed);
-            Assert.Equal(buffer.End, examined);
+            Assert.True(buffer.Slice(consumed).IsEmpty);
+            Assert.True(buffer.Slice(examined).IsEmpty);
         }
 
         private void VerifyRawHeaders(string rawHeaders, IEnumerable<string> expectedHeaderNames, IEnumerable<string> expectedHeaderValues)
@@ -403,8 +403,8 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Tests
             Assert.Equal(expectedHeaderNames.Count(), parsedHeaders.Length);
             Assert.Equal(expectedHeaderNames, parsedHeaders.Select(t => t.Key));
             Assert.Equal(expectedHeaderValues, parsedHeaders.Select(t => t.Value));
-            Assert.Equal(buffer.End, consumed);
-            Assert.Equal(buffer.End, examined);
+            Assert.True(buffer.Slice(consumed).IsEmpty);
+            Assert.True(buffer.Slice(examined).IsEmpty);
         }
 
         private IHttpParser<RequestHandler> CreateParser(IKestrelTrace log) => new HttpParser<RequestHandler>(log.IsEnabled(LogLevel.Information));

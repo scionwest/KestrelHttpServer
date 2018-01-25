@@ -62,19 +62,19 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http
 
                         if (!readableBuffer.IsEmpty)
                         {
-                            var writableBuffer = _context.RequestBodyPipe.Writer;
                             bool done;
 
                             try
                             {
-                                done = Read(readableBuffer, writableBuffer, out consumed, out examined);
+                                _context.RequestBodyPipe.Writer.GetMemory();
+                                done = Read(readableBuffer, _context.RequestBodyPipe.Writer, out consumed, out examined);
                             }
                             finally
                             {
-                                writableBuffer.Commit();
+                                _context.RequestBodyPipe.Writer.Commit();
                             }
 
-                            var writeAwaitable = writableBuffer.FlushAsync();
+                            var writeAwaitable = _context.RequestBodyPipe.Writer.FlushAsync();
                             var backpressure = false;
 
                             if (!writeAwaitable.IsCompleted)
