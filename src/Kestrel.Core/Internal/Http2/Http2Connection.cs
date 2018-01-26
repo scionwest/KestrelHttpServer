@@ -3,6 +3,7 @@
 
 using System;
 using System.Buffers;
+using System.Collections;
 using System.Collections.Sequences;
 using System.Collections.Concurrent;
 using System.IO.Pipelines;
@@ -132,7 +133,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http2
                     }
                     finally
                     {
-                        Input.Advance(consumed, examined);
+                        Input.AdvanceTo(consumed, examined);
                     }
                 }
 
@@ -165,7 +166,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http2
                     }
                     finally
                     {
-                        Input.Advance(consumed, examined);
+                        Input.AdvanceTo(consumed, examined);
                     }
                 }
             }
@@ -216,7 +217,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http2
             }
         }
 
-        private bool ParsePreface(ReadOnlyBuffer<byte> readableBuffer, out Position consumed, out Position examined)
+        private bool ParsePreface(ReadOnlyBuffer<byte> readableBuffer, out SequencePosition consumed, out SequencePosition examined)
         {
             consumed = readableBuffer.Start;
             examined = readableBuffer.End;

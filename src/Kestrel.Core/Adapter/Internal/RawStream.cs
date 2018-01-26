@@ -117,7 +117,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Adapter.Internal
                 }
                 finally
                 {
-                    _input.Advance(readableBuffer.End, readableBuffer.End);
+                    _input.AdvanceTo(readableBuffer.End, readableBuffer.End);
                 }
             }
         }

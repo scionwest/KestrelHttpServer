@@ -3,6 +3,7 @@
 
 using System;
 using System.Buffers;
+using System.Collections;
 using System.Collections.Sequences;
 using System.Diagnostics;
 using System.IO.Pipelines;
@@ -69,7 +70,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http
             Input.CancelPendingRead();
         }
 
-        public void ParseRequest(ReadOnlyBuffer<byte> buffer, out Position consumed, out Position examined)
+        public void ParseRequest(ReadOnlyBuffer<byte> buffer, out SequencePosition consumed, out SequencePosition examined)
         {
             consumed = buffer.Start;
             examined = buffer.End;
@@ -107,7 +108,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http
             }
         }
 
-        public bool TakeStartLine(ReadOnlyBuffer<byte> buffer, out Position consumed, out Position examined)
+        public bool TakeStartLine(ReadOnlyBuffer<byte> buffer, out SequencePosition consumed, out SequencePosition examined)
         {
             var overLength = false;
             if (buffer.Length >= ServerOptions.Limits.MaxRequestLineSize)
@@ -125,7 +126,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http
             return result;
         }
 
-        public bool TakeMessageHeaders(ReadOnlyBuffer<byte> buffer, out Position consumed, out Position examined)
+        public bool TakeMessageHeaders(ReadOnlyBuffer<byte> buffer, out SequencePosition consumed, out SequencePosition examined)
         {
             // Make sure the buffer is limited
             bool overLength = false;
@@ -453,7 +454,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http
             }
             finally
             {
-                Input.Advance(consumed, examined);
+                Input.AdvanceTo(consumed, examined);
             }
 
             if (result.IsCompleted)

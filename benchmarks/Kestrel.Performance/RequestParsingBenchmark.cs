@@ -45,7 +45,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Performance
             http1Connection.Reset();
 
             Http1Connection = http1Connection;
-            Pipe = new ResetablePipe(new PipeOptions(memoryPool));
+            Pipe = new Pipe(new PipeOptions(memoryPool));
         }
 
         [Benchmark(Baseline = true, OperationsPerInvoke = RequestParsingData.InnerLoopCount)]
@@ -165,7 +165,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Performance
             }
             while (readableBuffer.Length > 0);
 
-            Pipe.Reader.Advance(readableBuffer.End);
+            Pipe.Reader.AdvanceTo(readableBuffer.End);
         }
 
         private void ParseData()
@@ -188,7 +188,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Performance
                 {
                     ErrorUtilities.ThrowInvalidRequestLine();
                 }
-                Pipe.Reader.Advance(consumed, examined);
+                Pipe.Reader.AdvanceTo(consumed, examined);
 
                 result = Pipe.Reader.ReadAsync().GetAwaiter().GetResult();
                 readableBuffer = result.Buffer;
@@ -197,7 +197,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Performance
                 {
                     ErrorUtilities.ThrowInvalidRequestHeaders();
                 }
-                Pipe.Reader.Advance(consumed, examined);
+                Pipe.Reader.AdvanceTo(consumed, examined);
             }
             while (true);
         }

@@ -33,7 +33,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Tests
             var pipeOptions = new PipeOptions
             (
                 pool: _memoryPool,
-                readerScheduler: Mock.Of<Scheduler>()
+                readerScheduler: Mock.Of<PipeScheduler>()
             );
 
             using (var socketOutput = CreateOutputProducer(pipeOptions))
@@ -55,7 +55,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Tests
 
         private Http1OutputProducer CreateOutputProducer(PipeOptions pipeOptions)
         {
-            var pipe = new ResetablePipe(pipeOptions);
+            var pipe = new Pipe(pipeOptions);
             var serviceContext = new TestServiceContext();
             var socketOutput = new Http1OutputProducer(
                 pipe.Reader,

@@ -64,7 +64,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http
                 }
                 finally
                 {
-                    _context.RequestBodyPipe.Reader.Advance(consumed);
+                    _context.RequestBodyPipe.Reader.AdvanceTo(consumed);
                 }
             }
         }
@@ -96,7 +96,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http
                 }
                 finally
                 {
-                    _context.RequestBodyPipe.Reader.Advance(consumed);
+                    _context.RequestBodyPipe.Reader.AdvanceTo(consumed);
                 }
             }
         }

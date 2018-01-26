@@ -20,7 +20,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Tests
 
         public PipelineExtensionTests()
         {
-            _pipe = new ResetablePipe(new PipeOptions(_memoryPool));
+            _pipe = new Pipe(new PipeOptions(_memoryPool));
         }
 
         public void Dispose()

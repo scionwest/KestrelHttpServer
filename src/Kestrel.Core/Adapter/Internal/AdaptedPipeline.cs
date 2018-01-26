@@ -10,15 +10,15 @@ using System.Runtime.InteropServices;
 
 namespace Microsoft.AspNetCore.Server.Kestrel.Core.Adapter.Internal
 {
-    public class AdaptedPipeline : IPipeConnection
+    public class AdaptedPipeline : IDuplexPipe
     {
         private const int MinAllocBufferSize = 2048;
 
-        private readonly IPipeConnection _transport;
-        private readonly IPipeConnection _application;
+        private readonly IDuplexPipe _transport;
+        private readonly IDuplexPipe _application;
 
-        public AdaptedPipeline(IPipeConnection transport,
-                               IPipeConnection application,
+        public AdaptedPipeline(IDuplexPipe transport,
+                               IDuplexPipe application,
                                Pipe inputPipe,
                                Pipe outputPipe)
         {
@@ -32,9 +32,9 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Adapter.Internal
 
         public Pipe Output { get; }
 
-        PipeReader IPipeConnection.Input => Input.Reader;
+        PipeReader IDuplexPipe.Input => Input.Reader;
 
-        PipeWriter IPipeConnection.Output => Output.Writer;
+        PipeWriter IDuplexPipe.Output => Output.Writer;
 
         public async Task RunAsync(Stream stream)
         {
@@ -94,7 +94,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Core.Adapter.Internal
                     }
                     finally
                     {
-                        Output.Reader.Advance(buffer.End);
+                        Output.Reader.AdvanceTo(buffer.End);
                     }
                 }
             }

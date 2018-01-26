@@ -20,8 +20,8 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.Tests.TestHelpers
         {
             var connectionContext = new DefaultConnectionContext(features);
 
-            Input = new ResetablePipe(InputOptions(connectionContext.MemoryPool));
-            Output = new ResetablePipe(OutputOptions(connectionContext.MemoryPool));
+            Input = new Pipe(InputOptions(connectionContext.MemoryPool));
+            Output = new Pipe(OutputOptions(connectionContext.MemoryPool));
 
             var feature = connectionContext.Features.Get<IConnectionTransportFeature>();
 

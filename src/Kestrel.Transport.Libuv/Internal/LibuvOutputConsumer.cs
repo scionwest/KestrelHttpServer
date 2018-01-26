@@ -94,7 +94,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.Internal
                 }
                 finally
                 {
-                    _pipe.Advance(consumed);
+                    _pipe.AdvanceTo(consumed);
                 }
             }
         }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace System.IO.Pipelines
 {
-    public class PipeConnection : IPipeConnection
+    public class PipeConnection : IDuplexPipe
     {
         public PipeConnection(PipeReader reader, PipeWriter writer)
         {

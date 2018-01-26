@@ -20,7 +20,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Performance
         public void Setup()
         {
             _memoryPool = new MemoryPool();
-            _pipe = new ResetablePipe(new PipeOptions(_memoryPool));
+            _pipe = new Pipe(new PipeOptions(_memoryPool));
         }
 
         [Benchmark(OperationsPerInvoke = InnerLoopCount)]
@@ -43,7 +43,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Performance
                 {
                     var result = await _pipe.Reader.ReadAsync();
                     remaining -= result.Buffer.Length;
-                    _pipe.Reader.Advance(result.Buffer.End, result.Buffer.End);
+                    _pipe.Reader.AdvanceTo(result.Buffer.End, result.Buffer.End);
                 }
             });
 
@@ -59,7 +59,7 @@ namespace Microsoft.AspNetCore.Server.Kestrel.Performance
                 _pipe.Writer.Advance(_writeLenght);
                 _pipe.Writer.FlushAsync().GetAwaiter().GetResult();
                 var result = _pipe.Reader.ReadAsync().GetAwaiter().GetResult();
-                _pipe.Reader.Advance(result.Buffer.End, result.Buffer.End);
+                _pipe.Reader.AdvanceTo(result.Buffer.End, result.Buffer.End);
             }
         }
     }
